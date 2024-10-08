@@ -17,9 +17,6 @@ from django.http import HttpResponse
     "quantity": 5
 }
 '''
-
-def index(request):
-    return HttpResponse("Hello, this is the homepage!")
 class BookAddView(APIView):
     def post(self, request):
         serializer = BookSerializer(data=request.data)

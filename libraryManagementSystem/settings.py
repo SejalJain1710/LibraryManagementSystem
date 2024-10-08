@@ -90,13 +90,25 @@ WSGI_APPLICATION = 'libraryManagementSystem.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         # Replace this value with your local database's connection string.
+#         default='postgresql://library_database_hh9k_user:Earp56qFN62uWSZux8OYqedCVa4aHX6e@dpg-cs2ij2m8ii6s739j6qt0-a.singapore-postgres.render.com/library_database_hh9k',
+#         conn_max_age=600
+#     )
+# }
+
 DATABASES = {
-    'default': dj_database_url.config(
-        # Replace this value with your local database's connection string.
-        default='postgresql://library_database_hh9k_user:Earp56qFN62uWSZux8OYqedCVa4aHX6e@dpg-cs2ij2m8ii6s739j6qt0-a.singapore-postgres.render.com/library_database_hh9k',
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'library_database_hh9k',
+        'USER': 'library_database_hh9k_user',
+        'PASSWORD': 'Earp56qFN62uWSZux8OYqedCVa4aHX6e',
+        'HOST': 'dpg-cs2ij2m8ii6s739j6qt0-a.singapore-postgres.render.com',  # Ensure this is the correct hostname
+        'PORT': '5432',
+    }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

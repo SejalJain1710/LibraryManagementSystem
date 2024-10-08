@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import BookCopy, Book, CustomUser, Transaction
 from .serializer import BookSerializer, BookCopySerializer, CustomUserSerializer, TransactionSerializer
+from rest_framework.permissions import IsAuthenticated
+from authentication.permissions import IsLibrarian
 
 '''
 {
@@ -20,7 +22,6 @@ class BookAddView(APIView):
         if serializer.is_valid():
             quantity = request.data.get('quantity', 1)
 
-            # Validate the number of copies
             if not isinstance(quantity, int) or quantity <= 0:
                 return Response({"error": "Number of copies must be a positive integer."}, status=status.HTTP_400_BAD_REQUEST)
             
@@ -54,6 +55,8 @@ class BookDetailView(APIView):
         return Response(serializer.data)
     
 class BookDeleteView(APIView):
+
+    permission_classes = [IsAuthenticated, IsLibrarian]
     def delete(self, request, book_id):
         try:
             book = Book.objects.get(id=book_id)

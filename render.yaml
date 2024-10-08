@@ -2,7 +2,7 @@ databases:
   - name: library-database
     plan: free
     databaseName: library_database_hh9k
-    user: library_database_hh9k
+    user: library_database_hh9k_user
 
 services:
   - type: web

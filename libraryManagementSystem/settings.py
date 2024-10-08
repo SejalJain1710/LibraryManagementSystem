@@ -172,6 +172,6 @@ REST_AUTH = {
 
 }
 
-CSRF_TRUSTED_ORIGINS = ['*']
+CSRF_TRUSTED_ORIGINS = ['https://librarymanagementsystem-oc6y.onrender.com', 'http://librarymanagementsystem-oc6y.onrender.com', 'https://www.librarymanagementsystem-oc6y.onrender.com', 'http://www.librarymanagementsystem-oc6y.onrender.com']
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 

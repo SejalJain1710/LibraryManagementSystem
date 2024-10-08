@@ -7,6 +7,7 @@ from .models import BookCopy, Book, CustomUser, Transaction
 from .serializer import BookSerializer, BookCopySerializer, CustomUserSerializer, TransactionSerializer
 from rest_framework.permissions import IsAuthenticated
 from authentication.permissions import IsLibrarian
+from django.http import HttpResponse
 
 '''
 {
@@ -16,6 +17,9 @@ from authentication.permissions import IsLibrarian
     "quantity": 5
 }
 '''
+
+def index(request):
+    return HttpResponse("Hello, this is the homepage!")
 class BookAddView(APIView):
     def post(self, request):
         serializer = BookSerializer(data=request.data)

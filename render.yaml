@@ -1,8 +1,8 @@
 databases:
   - name: libraryManagementSystemdb
     plan: free
-    databaseName: library-database
-    user: libraryManagementSystem
+    databaseName: library_database_hh9k
+    user: library_database_hh9k
 
 services:
   - type: web

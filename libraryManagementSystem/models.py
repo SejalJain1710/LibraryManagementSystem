@@ -49,7 +49,7 @@ class Transaction(models.Model):
     date_returned = models.DateField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.issued_to.first_name + " " + self.issued_to.last_name} - {self.book_copy.book.name}"
+        return f"{self.issued_to.first_name} {self.issued_to.last_name} - {self.book_copy.book.name}"
     
     # can expose is_overdue function
     # can expose function to calculate fine

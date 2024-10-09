@@ -1,0 +1,11 @@
+meta {
+  name: Active users list
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{base_url}}/users/active/
+  body: json
+  auth: none
+}

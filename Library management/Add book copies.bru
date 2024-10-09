@@ -1,0 +1,17 @@
+meta {
+  name: Add book copies
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{base_url}}/books/4/copies/add/
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "quantity": 2
+  }
+}

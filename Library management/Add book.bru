@@ -1,0 +1,20 @@
+meta {
+  name: Add book
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{base_url}}/books/add/
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "name": "Macbeth",
+      "author": "Shakespeare",
+      "isbn": "9780061000000",
+      "quantity": 2
+  }
+}

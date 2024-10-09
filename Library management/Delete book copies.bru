@@ -1,0 +1,11 @@
+meta {
+  name: Delete book copies
+  type: http
+  seq: 8
+}
+
+delete {
+  url: {{base_url}}/books/copies/9/delete/
+  body: json
+  auth: none
+}

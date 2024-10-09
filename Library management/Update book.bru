@@ -1,0 +1,18 @@
+meta {
+  name: Update book
+  type: http
+  seq: 6
+}
+
+patch {
+  url: {{base_url}}/books/4/update
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "name": "Kill a Mockingbird",
+      "author": "Harper Lee"
+  }
+}

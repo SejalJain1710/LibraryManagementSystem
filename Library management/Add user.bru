@@ -1,0 +1,25 @@
+meta {
+  name: Add user
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{base_url}}/users/add/
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "password": "strongpassword123",
+    "username": "rajat",
+    "first_name": "rajat",
+    "last_name": "doe",
+    "email": "rajat@example.com",
+    "phone_number": "123-456-7890",
+    "roles": [
+      1
+    ]
+  }
+}

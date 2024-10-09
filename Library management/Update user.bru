@@ -1,0 +1,17 @@
+meta {
+  name: Update user
+  type: http
+  seq: 12
+}
+
+patch {
+  url: {{base_url}}/users/2/update/
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "last_name": "jain"
+  }
+}

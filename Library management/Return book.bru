@@ -1,0 +1,17 @@
+meta {
+  name: Return book
+  type: http
+  seq: 16
+}
+
+patch {
+  url: {{base_url}}/book/1/return/
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "date_returned": "2024-11-11"
+  }
+}

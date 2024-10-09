@@ -11,9 +11,7 @@ class BookCopySerializer(serializers.ModelSerializer):
         model = BookCopy
         fields = ['name','status', 'copy_number', 'book_id', 'copy_id']
 
-    def create_copies(self, validated_data, quantity):
-        book = Book.objects.create(**validated_data) 
-
+    def create_copies(self, book, quantity):
         if quantity <= 0:
             raise serializers.ValidationError("Quantity must be a positive integer.")
         
@@ -23,7 +21,7 @@ class BookCopySerializer(serializers.ModelSerializer):
             book_copy = BookCopy.objects.create(book=book, copy_number=copy_number)
             copies_created.append(book_copy)
 
-        return book
+        return copies_created
 
 class BookSerializer(serializers.ModelSerializer):
     copy = BookCopySerializer(many=True, read_only=True) 
@@ -32,8 +30,16 @@ class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ['id', 'name', 'author', 'isbn', 'quantity', 'copy']
-        read_only_fields = ['isbn', 'quantity']
 
+    def validate_isbn(self, value):
+        # For update: make ISBN read-only by raising a validation error if an attempt to update it is made
+        if self.instance:
+            if self.instance.isbn != value:
+                raise serializers.ValidationError("ISBN cannot be updated.")
+        else: # For create: check if a book with the same ISBN already exists
+            if Book.objects.filter(isbn=value).exists():
+                raise serializers.ValidationError("A book with this ISBN already exists.")
+        return value
     def create(self, validated_data):
         quantity = validated_data.pop('quantity')
         existing_book = Book.objects.filter(isbn=validated_data['isbn']).first()
@@ -50,7 +56,7 @@ class BookSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         """Custom method to represent the response."""
         data = super().to_representation(instance)
-        data['copies'] = BookCopySerializer(instance.bookcopy_set.all(), many=True).data  # Attach copies
+        data['copies'] = BookCopySerializer(instance.bookcopy_set.all(), many=True).data
         return data
     
 class CustomUserSerializer(serializers.ModelSerializer):

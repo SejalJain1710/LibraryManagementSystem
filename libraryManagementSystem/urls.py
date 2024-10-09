@@ -29,14 +29,13 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('books/', BookListView.as_view(), name='book-list'),
     path('books/<int:book_id>/', BookDetailView.as_view(), name='book-detail'),
-    path('books/add/', BookAddView.as_view(), name='book-add'), #[revisit]
+    path('books/add/', BookAddView.as_view(), name='book-add'),
     path('books/<int:book_id>/delete/', BookDeleteView.as_view(), name='book-delete'),
-    path('books/<int:book_id>/update/', BookUpdateView.as_view(), name='book-update'), #[revisit]
+    path('books/<int:book_id>/update/', BookUpdateView.as_view(), name='book-update'),
 
-    path('books/<int:book_id>/copies/add/', BookCopyAddView.as_view(), name='book-copy-add'), #[revisit]
-    path('books/<int:book_id>/copies/<int:copy_id>/delete/', BookCopyDeleteView.as_view(), name='book-copy-delete'), #[revisit]
+    path('books/<int:book_id>/copies/add/', BookCopyAddView.as_view(), name='book-copy-add'),
+    path('books/copies/<int:copy_id>/delete/', BookCopyDeleteView.as_view(), name='book-copy-delete'),
 
-    # path('users/members/', MemberListView.as_view(), name='member-list'),
     path('users/add/', UserAddView.as_view(), name='user-add'),
     path('users/<int:user_id>/delete/', UserDeleteView.as_view(), name='user-delete'),
     path('users/<int:user_id>/update/', UserUpdateView.as_view(), name='user-update'),

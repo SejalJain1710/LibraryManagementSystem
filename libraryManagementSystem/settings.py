@@ -23,12 +23,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-SECRET_KEY = 'django-insecure-*^hzvr_^l7rv)b%criclhypgh1yjwkpuhyglz$i$uyi=av4%=1'
-# if RENDER_EXTERNAL_HOSTNAME:    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
-# SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
+# DEBUG = True
+
 
 ALLOWED_HOSTS = ['*']
 
@@ -90,24 +90,17 @@ WSGI_APPLICATION = 'libraryManagementSystem.wsgi.application'
 #     }
 # }
 
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         # Replace this value with your local database's connection string.
-#         default='postgresql://library_database_hh9k_user:Earp56qFN62uWSZux8OYqedCVa4aHX6e@dpg-cs2ij2m8ii6s739j6qt0-a.singapore-postgres.render.com/library_database_hh9k',
-#         conn_max_age=600
-#     )
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'library_database_hh9k',
-        'USER': 'library_database_hh9k_user',
-        'PASSWORD': 'Earp56qFN62uWSZux8OYqedCVa4aHX6e',
-        'HOST': 'dpg-cs2ij2m8ii6s739j6qt0-a.singapore-postgres.render.com',  # Ensure this is the correct hostname
+        'NAME': os.environ.get('DATABASE_NAME'),
+        'USER': os.environ.get('DATABASE_USER'),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD'), 
+        'HOST': os.environ.get('DATABASE_HOST'),
         'PORT': '5432',
     }
 }
+
 
 
 # Password validation

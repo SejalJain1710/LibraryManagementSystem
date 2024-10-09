@@ -1,5 +1,3 @@
-from datetime import date
-from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -7,16 +5,7 @@ from .models import BookCopy, Book, CustomUser, Transaction
 from .serializer import BookSerializer, BookCopySerializer, CustomUserSerializer, TransactionSerializer
 from rest_framework.permissions import IsAuthenticated
 from authentication.permissions import IsLibrarian
-from django.http import HttpResponse
 
-'''
-{
-    "name": "To Kill a Mockingbird",
-    "author": "Harper Lee",
-    "isbn": "9780061120084",
-    "quantity": 5
-}
-'''
 class BookAddView(APIView):
     def post(self, request):
         serializer = BookSerializer(data=request.data)
@@ -26,12 +15,12 @@ class BookAddView(APIView):
             if not isinstance(quantity, int) or quantity <= 0:
                 return Response({"error": "Number of copies must be a positive integer."}, status=status.HTTP_400_BAD_REQUEST)
             
-            book = serializer.save()
+            serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class BookUpdateView(APIView):
-    def update(self, request, book_id):
+    def patch(self, request, book_id):
         try:
             book = Book.objects.get(id=book_id)
         except Book.DoesNotExist:
@@ -57,30 +46,24 @@ class BookDetailView(APIView):
     
 class BookDeleteView(APIView):
 
-    permission_classes = [IsAuthenticated, IsLibrarian]
+    # permission_classes = [IsAuthenticated, IsLibrarian]
     def delete(self, request, book_id):
         try:
             book = Book.objects.get(id=book_id)
             book.delete()  # This will cascade delete all related BookCopy instances
-            return Response({"message": "Book and its copies deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
         except Book.DoesNotExist:
             return Response({"error": "Book not found."}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"message": "Book and its copies deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
         
 class BookCopyDeleteView(APIView):
     def delete(self, request, copy_id):
         try:
             book_copy = BookCopy.objects.get(id=copy_id)
             book_copy.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
         except BookCopy.DoesNotExist:
             return Response({"error": "Book copy not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"message": "Book copy deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
-'''
-{
-"book_id": 5,
-"quantity": 2
-}
-'''
 class BookCopyAddView(APIView):
     def post(self, request, book_id):
         try:
@@ -97,20 +80,6 @@ class BookCopyAddView(APIView):
 
         return Response({"message": f"{additional_quantity} copies added.", "copies": [{"copy_number": copy.copy_number} for copy in copies_created]}, status=status.HTTP_201_CREATED)
     
-'''
-{
-    "password": "strongpassword123",
-    "username": "john_doe",
-    "first_name": "john",
-    "last_name": "doe",
-    "email": "john.doe@example.com",
-    "phone_number": "123-456-7890",
-    "roles": [
-        1,
-        2
-    ]
-}
-'''
 class UserAddView(APIView):
     def post(self, request):        
         serializer = CustomUserSerializer(data=request.data)
@@ -166,14 +135,6 @@ class UserHistoryView(APIView):
         serializer = TransactionSerializer(transaction, many=True)
         return Response(serializer.data)
 
-'''
-{
-  "issued_to": "4",
-  "issued_by": "3", 
-  "book_copy": "5",          
-  "date_issued": "2024-10-05"
-}
-'''
 class BookIssueView(APIView):
     def post(self, request):
         serializer = TransactionSerializer(data=request.data)
@@ -182,11 +143,6 @@ class BookIssueView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-'''  
-{
-"date_returned": "2024-11-11"
-}
-'''
 class BookReturnView(APIView):
     def patch(self, request, transaction_id):
         try:

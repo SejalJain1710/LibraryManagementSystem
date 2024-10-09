@@ -1,13 +1,13 @@
 databases:
-  - name: library-database
+  - name: lms-database
     plan: free
-    databaseName: library_database_hh9k
-    user: library_database_hh9k_user
+    databaseName: DATABASE_NAME
+    user: USERNAME
 
 services:
   - type: web
     plan: free
-    name: libraryManagementSystem
+    name: lms-db
     runtime: python
     buildCommand: "./build.sh"
     startCommand: "python -m gunicorn libraryManagementSystem.asgi:application -k uvicorn.workers.UvicornWorker"

@@ -1,8 +1,8 @@
 databases:
   - name: lms-database
     plan: free
-    databaseName: DATABASE_NAME
-    user: USERNAME
+    databaseName: 'lms_db_3v7h'
+    user: 'lms_db_3v7h_user'
 
 services:
   - type: web

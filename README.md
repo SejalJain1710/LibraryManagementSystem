@@ -21,3 +21,6 @@ https://librarymanagementsystem-oc6y.onrender.com/admin/
 
 uername: admin 
 password: password
+
+## API Documentation
+All APIs have been documented in a folder called Library Management using the open-source tool Bruno. This collection can be directly imported into Bruno for fast and easy access.

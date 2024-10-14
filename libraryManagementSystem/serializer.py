@@ -68,6 +68,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
+        roles_data = validated_data.get('roles', None)
+
         user = CustomUser.objects.create_user(
             username=validated_data['username'],
             password=validated_data['password'],
@@ -76,6 +78,12 @@ class CustomUserSerializer(serializers.ModelSerializer):
             last_name=validated_data.get('last_name', ''),
             phone_number=validated_data.get('phone_number', '')
         )
+        if roles_data:
+            user.roles.set(roles_data)
+        else:
+            member_role = Role.objects.get(name=Role.RoleOptions.MEMBER)
+            user.roles.add(member_role)
+        
         return user
 
 class TransactionSerializer(serializers.ModelSerializer):

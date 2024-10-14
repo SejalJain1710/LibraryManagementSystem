@@ -4,18 +4,18 @@ from django.contrib.auth.models import AbstractUser
     # a professional who facilitates access to information and resources within a library.
     # A library member is an authorized person who can use the library's facilities and enter the library
 class Role(models.Model):
-    class Role(models.TextChoices):
+    class RoleOptions(models.TextChoices):
         LIBRARIAN = 'librarian'
         MEMBER = 'member'
     # add these roles in db and don't expose it to client
-    name = models.CharField(max_length=50, choices=Role.choices, default=Role.MEMBER)
+    name = models.CharField(max_length=50, choices=RoleOptions.choices, default=RoleOptions.MEMBER)
     description = models.TextField(blank=True, null=True)
     def __str__(self):
         return self.name
     
 class CustomUser(AbstractUser):
     email = models.EmailField(unique=True)
-    roles = models.ManyToManyField(Role, related_name='users')  # Users can have multiple roles (e.g., both Member and Librarian)
+    roles = models.ManyToManyField(Role, related_name='users', default=Role.RoleOptions.MEMBER)  # Users can have multiple roles (e.g., both Member and Librarian)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
 
     def __str__(self):

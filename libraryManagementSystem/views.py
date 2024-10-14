@@ -1,3 +1,4 @@
+from rest_framework.permissions import AllowAny
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -7,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from authentication.permissions import IsLibrarian
 
 class BookAddView(APIView):
+    permission_classes = [IsAuthenticated, IsLibrarian]
     def post(self, request):
         serializer = BookSerializer(data=request.data)
         if serializer.is_valid():
@@ -20,6 +22,7 @@ class BookAddView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class BookUpdateView(APIView):
+    permission_classes = [IsAuthenticated, IsLibrarian]
     def patch(self, request, book_id):
         try:
             book = Book.objects.get(id=book_id)
@@ -33,12 +36,15 @@ class BookUpdateView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class BookListView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request, *args, **kwargs):
         queryset = BookCopy.objects.prefetch_related('book').all()
         serializer = BookCopySerializer(queryset, many=True)
         return Response(serializer.data)
 
 class BookDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, book_id):
         queryset = Book.objects.get(id=book_id)
         serializer = BookSerializer(queryset)
@@ -46,7 +52,7 @@ class BookDetailView(APIView):
     
 class BookDeleteView(APIView):
 
-    # permission_classes = [IsAuthenticated, IsLibrarian]
+    permission_classes = [IsAuthenticated, IsLibrarian]
     def delete(self, request, book_id):
         try:
             book = Book.objects.get(id=book_id)
@@ -56,6 +62,7 @@ class BookDeleteView(APIView):
         return Response({"message": "Book and its copies deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
         
 class BookCopyDeleteView(APIView):
+    permission_classes = [IsAuthenticated, IsLibrarian]
     def delete(self, request, copy_id):
         try:
             book_copy = BookCopy.objects.get(id=copy_id)
@@ -65,6 +72,7 @@ class BookCopyDeleteView(APIView):
         return Response({"message": "Book copy deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
 class BookCopyAddView(APIView):
+    permission_classes = [IsAuthenticated, IsLibrarian]
     def post(self, request, book_id):
         try:
             book = Book.objects.get(id=book_id)
@@ -81,6 +89,8 @@ class BookCopyAddView(APIView):
         return Response({"message": f"{additional_quantity} copies added.", "copies": [{"copy_number": copy.copy_number} for copy in copies_created]}, status=status.HTTP_201_CREATED)
     
 class UserAddView(APIView):
+    permission_classes = [IsAuthenticated, IsLibrarian]
+
     def post(self, request):        
         serializer = CustomUserSerializer(data=request.data)
         if serializer.is_valid():
@@ -90,28 +100,38 @@ class UserAddView(APIView):
     
 class UserDeleteView(APIView):
     def delete(self, request, user_id):
-        try:
-            user = CustomUser.objects.get(id=user_id)
-        except CustomUser.DoesNotExist:
-            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
-        user.is_active = False
-        user.save()
-        return Response({"message": "User deactivated successfully."}, status=status.HTTP_200_OK)
+        current_user = request.user
+        if 'librarian' in current_user.roles.all() or current_user.id == user_id:
+            try:
+                user = CustomUser.objects.get(id=user_id)
+            except CustomUser.DoesNotExist:
+                return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+            user.is_active = False
+            user.save()
+            return Response({"message": "User deactivated successfully."}, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "You do not have permission to delete this user's details."}, status=status.HTTP_403_FORBIDDEN)
         
 class UserUpdateView(APIView):
-    def patch(self, request, user_id):
-        try:
-            user = CustomUser.objects.get(id=user_id)
-        except CustomUser.DoesNotExist:
-            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        serializer = CustomUserSerializer(user, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def patch(self, request, user_id):
+        current_user = request.user
+        if 'librarian' in current_user.roles.all() or current_user.id == user_id:
+            try:
+                user = CustomUser.objects.get(id=user_id)
+            except CustomUser.DoesNotExist:
+                return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+            serializer = CustomUserSerializer(user, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({"error": "You do not have permission to update this user's details."}, status=status.HTTP_403_FORBIDDEN)
     
 class UserListView(APIView):
+    permission_classes = [IsAuthenticated, IsLibrarian]
     def get(self, request, *args, **kwargs):
         queryset = CustomUser.objects.all()
         serializer = CustomUserSerializer(queryset, many=True)
@@ -119,11 +139,16 @@ class UserListView(APIView):
     
 class UserDetailView(APIView):
     def get(self, request, user_id):
-        queryset = CustomUser.objects.get(id=user_id)
-        serializer = CustomUserSerializer(queryset)
-        return Response(serializer.data)
+        current_user = request.user
+        if 'librarian' in current_user.roles.all() or current_user.id == user_id:
+            queryset = CustomUser.objects.get(id=user_id)
+            serializer = CustomUserSerializer(queryset)
+            return Response(serializer.data)
+        else:
+            return Response({"error": "You do not have permission to view this user's details."}, status=status.HTTP_403_FORBIDDEN)
     
 class ActiveUserListView(APIView):
+    permission_classes = [IsAuthenticated, IsLibrarian]
     def get(self, request):
         users = CustomUser.objects.filter(is_active=True)
         serializer = CustomUserSerializer(users, many=True)

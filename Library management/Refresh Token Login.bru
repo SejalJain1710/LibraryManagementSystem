@@ -1,0 +1,18 @@
+meta {
+  name: Refresh Token Login
+  type: http
+  seq: 20
+}
+
+post {
+  url: {{base_url}}/login/
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "sejal",
+    "password": "password"
+  }
+}

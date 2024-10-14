@@ -16,10 +16,13 @@ This repository implements a library management system with two user roles: LIBR
 * Delete their account.
 * View personal borrowing history.
 
+## API endpoints working demo
+https://drive.google.com/file/d/1VnnnuCssWBc6hCUoJLzlth32RXhpQKH7/view?usp=sharing
+
 ## Admin login 
 https://librarymanagementsystem-oc6y.onrender.com/admin/
 
-uername: admin 
+username: admin 
 password: password
 
 ## API Documentation

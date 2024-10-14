@@ -16,7 +16,7 @@ This repository implements a library management system with two user roles: LIBR
 * Delete their account.
 * View personal borrowing history.
 
-## API endpoints working demo
+## API endpoints working demo (can consider watching at 2x speed!)
 https://drive.google.com/file/d/1VnnnuCssWBc6hCUoJLzlth32RXhpQKH7/view?usp=sharing
 
 ## Admin login 
